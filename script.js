@@ -1,23 +1,22 @@
-// MOBILE-FIRST BUTTON FUNCTIONALITY
-// Complete rewrite with focus on mobile touch events
+// MOBILE-FIRST BUTTON FUNCTIONALITY - COMPLETE REWRITE
+// Simplified approach with no complex effects
 
 console.log('🚀 Starting mobile-optimized script...');
 
 // Utility functions
 function isMobileDevice() {
-    const isMobileWidth = window.innerWidth <= 768;
-    const isMobileAgent = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    return isMobileWidth || isMobileAgent;
+    return window.innerWidth <= 768;
 }
 
 function smoothScrollTo(elementId) {
-    console.log(`📍 Scrolling to: ${elementId}`);
+    console.log(`📍 Attempting to scroll to: ${elementId}`);
     const element = document.getElementById(elementId);
     if (element) {
         element.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
+        console.log(`✅ Successfully scrolled to: ${elementId}`);
         return true;
     }
     console.error(`❌ Element not found: ${elementId}`);
@@ -50,7 +49,7 @@ function selectServiceAndScroll(serviceName) {
     scrollToContact();
 }
 
-// Button click handlers
+// Simple button click handlers
 function handleHeroBookNow(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -98,7 +97,7 @@ function handleMaintenanceButton(event) {
     selectServiceAndScroll('Maintenance Service');
 }
 
-// Mobile menu functionality
+// Mobile menu functionality - SIMPLIFIED
 function initializeMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const nav = document.querySelector('.nav');
@@ -110,35 +109,56 @@ function initializeMobileMenu() {
 
     console.log('📱 Initializing mobile menu');
 
-    // Mobile menu toggle
+    // Simple toggle function
+    function toggleMenu() {
+        console.log('🍔 Mobile menu toggled');
+        nav.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+    }
+
+    // Close menu function
+    function closeMenu() {
+        console.log('❌ Closing mobile menu');
+        nav.classList.remove('active');
+        mobileMenuBtn.classList.remove('active');
+    }
+
+    // Mobile menu button click
     mobileMenuBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🍔 Mobile menu toggled');
-        
-        nav.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
+        toggleMenu();
     });
 
     // Close menu when clicking nav links
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function(e) {
             console.log('🔗 Nav link clicked, closing menu');
-            nav.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
+            closeMenu();
+            
+            // Handle navigation
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                if (targetId === 'contact') {
+                    scrollToContact();
+                } else {
+                    smoothScrollTo(targetId);
+                }
+            }
         });
     });
 
     // Close menu when clicking outside
     document.addEventListener('click', function(e) {
         if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            nav.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
+            closeMenu();
         }
     });
 }
 
-// Initialize all button functionality
+// Initialize all button functionality - SIMPLIFIED
 function initializeButtons() {
     console.log('🔘 Initializing buttons...');
 
@@ -146,7 +166,6 @@ function initializeButtons() {
     const heroBookBtn = document.querySelector('.hero .cta-btn.primary');
     if (heroBookBtn) {
         heroBookBtn.addEventListener('click', handleHeroBookNow);
-        heroBookBtn.addEventListener('touchend', handleHeroBookNow);
         console.log('✅ Hero Book Now button initialized');
     } else {
         console.error('❌ Hero Book Now button not found');
@@ -156,7 +175,6 @@ function initializeButtons() {
     const viewServicesBtn = document.querySelector('.hero .cta-btn.secondary');
     if (viewServicesBtn) {
         viewServicesBtn.addEventListener('click', handleViewServices);
-        viewServicesBtn.addEventListener('touchend', handleViewServices);
         console.log('✅ View Services button initialized');
     }
 
@@ -164,7 +182,6 @@ function initializeButtons() {
     const headerContactBtn = document.querySelector('.nav .contact-btn');
     if (headerContactBtn) {
         headerContactBtn.addEventListener('click', handleHeaderContact);
-        headerContactBtn.addEventListener('touchend', handleHeaderContact);
         console.log('✅ Header Contact button initialized');
     } else {
         console.error('❌ Header Contact button not found');
@@ -176,7 +193,6 @@ function initializeButtons() {
     
     serviceButtons.forEach((btn, index) => {
         btn.addEventListener('click', handleServiceButton);
-        btn.addEventListener('touchend', handleServiceButton);
         console.log(`✅ Service button ${index + 1} initialized`);
     });
 
@@ -184,7 +200,6 @@ function initializeButtons() {
     const maintenanceBtn = document.querySelector('.maintenance-btn');
     if (maintenanceBtn) {
         maintenanceBtn.addEventListener('click', handleMaintenanceButton);
-        maintenanceBtn.addEventListener('touchend', handleMaintenanceButton);
         console.log('✅ Maintenance button initialized');
     } else {
         console.error('❌ Maintenance button not found');
@@ -338,29 +353,6 @@ function initializeHeaderScroll() {
     });
 }
 
-// Mobile touch optimization
-function initializeMobileTouchOptimization() {
-    if (!isMobileDevice()) return;
-
-    console.log('📱 Applying mobile touch optimizations');
-    
-    // Add touch device class
-    document.body.classList.add('touch-device');
-    
-    // Improve button responsiveness on touch devices
-    const buttons = document.querySelectorAll('button, .btn, .cta-btn, .service-btn, .maintenance-btn, .submit-btn, .contact-method');
-    buttons.forEach(btn => {
-        // Configure for touch
-        btn.style.cursor = 'pointer';
-        btn.style.touchAction = 'manipulation';
-        btn.style.webkitTapHighlightColor = 'transparent';
-        btn.style.userSelect = 'none';
-        btn.style.pointerEvents = 'auto';
-        
-        console.log('🔘 Button optimized for touch:', btn.className);
-    });
-}
-
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM loaded, initializing mobile-optimized functionality...');
@@ -373,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
     initializeHeaderScroll();
     initializeContactForm();
-    initializeMobileTouchOptimization();
     
     console.log('✅ All mobile functionality initialized successfully');
 });
