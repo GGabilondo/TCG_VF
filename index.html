@@ -596,6 +596,18 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <input type="date" id="preferred-date" name="preferred-date" placeholder="Preferred Date" required>
+                            </div>
+                            <div class="form-group">
+                                <select id="preferred-time" name="preferred-time" required>
+                                    <option value="">Select Preferred Time</option>
+                                    <option value="Morning (8:00 AM - 12:00 PM)">Morning (8:00 AM - 12:00 PM)</option>
+                                    <option value="Afternoon (12:00 PM - 5:00 PM)">Afternoon (12:00 PM - 5:00 PM)</option>
+                                    <option value="Evening (5:00 PM - 8:00 PM)">Evening (5:00 PM - 8:00 PM)</option>
+                                    <option value="Flexible">Flexible</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <textarea id="message" name="message" placeholder="Additional details or special requests" rows="4"></textarea>
                             </div>
                             <button type="submit" class="submit-btn">

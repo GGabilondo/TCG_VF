@@ -87,19 +87,52 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     const email = formData.get('email');
     const phone = formData.get('phone');
     const service = formData.get('service');
+    const preferredDate = formData.get('preferred-date');
+    const preferredTime = formData.get('preferred-time');
     const message = formData.get('message');
     
-    // Create WhatsApp message
-    const whatsappMessage = `Hi! I'd like to book a service.%0A%0AName: ${name}%0AEmail: ${email}%0APhone: ${phone}%0AService: ${service}%0AMessage: ${message || 'No additional message'}`;
+    // Format the date for better readability
+    const dateObj = new Date(preferredDate);
+    const formattedDate = dateObj.toLocaleDateString('en-GB', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
     
-    // Open WhatsApp with pre-filled message
-    window.open(`https://wa.me/447398251847?text=${whatsappMessage}`, '_blank');
+    // Create email body for both recipients
+    const emailSubject = `New Booking Request - ${service}`;
+    const emailBody = `New booking request from TCG CarCare website:%0A%0A` +
+        `Name: ${name}%0A` +
+        `Email: ${email}%0A` +
+        `Phone: ${phone}%0A` +
+        `Service: ${service}%0A` +
+        `Preferred Date: ${formattedDate}%0A` +
+        `Preferred Time: ${preferredTime}%0A` +
+        `Message: ${message || 'No additional message'}%0A%0A` +
+        `Please respond to confirm the booking.`;
+    
+    // Create mailto links for both email addresses
+    const email1 = `mailto:info@tcgcarcare.co.uk?subject=${emailSubject}&body=${emailBody}`;
+    const email2 = `mailto:hola@remedio.studio?subject=${emailSubject}&body=${emailBody}`;
+    
+    // Create WhatsApp message
+    const whatsappMessage = `Hi! I'd like to book a service.%0A%0AName: ${name}%0AEmail: ${email}%0APhone: ${phone}%0AService: ${service}%0APreferred Date: ${formattedDate}%0APreferred Time: ${preferredTime}%0AMessage: ${message || 'No additional message'}`;
+    
+    // Open email clients and WhatsApp
+    window.open(email1, '_blank');
+    setTimeout(() => {
+        window.open(email2, '_blank');
+    }, 500);
+    setTimeout(() => {
+        window.open(`https://wa.me/447398251847?text=${whatsappMessage}`, '_blank');
+    }, 1000);
     
     // Reset form
     this.reset();
     
     // Show success message
-    alert('Thank you! You will be redirected to WhatsApp to complete your booking.');
+    alert('Thank you! Email clients will open to send your booking request to both addresses, and WhatsApp will also open for immediate contact.');
 });
 
 // Smooth scroll for hero CTA buttons
