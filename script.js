@@ -1,9 +1,7 @@
-// ULTRA-SIMPLIFIED MOBILE SCRIPT - NO COMPLEX EFFECTS
-// Focus on basic functionality only
+// Clean, simple JavaScript for all devices
+console.log('🚀 TCG CarCare - Starting clean script...');
 
-console.log('🚀 Starting ultra-simplified mobile script...');
-
-// Basic utility functions
+// Utility functions
 function isMobile() {
     return window.innerWidth <= 768;
 }
@@ -16,7 +14,10 @@ function scrollToElement(elementId) {
     log(`Scrolling to: ${elementId}`);
     const element = document.getElementById(elementId);
     if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
         log(`✅ Scrolled to: ${elementId}`);
         return true;
     }
@@ -24,7 +25,7 @@ function scrollToElement(elementId) {
     return false;
 }
 
-// Simple mobile menu
+// Mobile menu functionality
 function setupMobileMenu() {
     const menuBtn = document.getElementById('mobileMenuBtn');
     const nav = document.querySelector('.nav');
@@ -81,9 +82,11 @@ function setupMobileMenu() {
             }
         }
     });
+    
+    log('✅ Mobile menu setup complete');
 }
 
-// Simple button handlers
+// Button functionality
 function setupButtons() {
     log('Setting up buttons');
     
@@ -174,9 +177,11 @@ function setupButtons() {
         });
         log('✅ Maintenance button setup');
     }
+    
+    log('✅ All buttons setup complete');
 }
 
-// Simple navigation
+// Navigation
 function setupNavigation() {
     log('Setting up navigation');
     
@@ -191,9 +196,11 @@ function setupNavigation() {
             }
         });
     });
+    
+    log('✅ Navigation setup complete');
 }
 
-// Simple contact form
+// Contact form
 function setupContactForm() {
     const form = document.getElementById('contactForm');
     if (!form) {
@@ -273,9 +280,11 @@ function setupContactForm() {
         alert('Thank you! Your booking request will be sent.');
         log('✅ Form processed successfully');
     });
+    
+    log('✅ Contact form setup complete');
 }
 
-// Simple scroll indicator
+// Scroll indicator
 function setupScrollIndicator() {
     const indicator = document.getElementById('scrollIndicator');
     if (indicator) {
@@ -297,7 +306,7 @@ function setupScrollIndicator() {
     }
 }
 
-// Simple header scroll
+// Header scroll effect
 function setupHeaderScroll() {
     window.addEventListener('scroll', function() {
         const header = document.getElementById('header');
@@ -309,12 +318,15 @@ function setupHeaderScroll() {
             }
         }
     });
+    
+    log('✅ Header scroll setup');
 }
 
 // Initialize everything
 document.addEventListener('DOMContentLoaded', function() {
     log('🚀 DOM loaded - initializing...');
     log(`📱 Mobile device: ${isMobile()}`);
+    log(`📏 Screen width: ${window.innerWidth}px`);
     
     setupMobileMenu();
     setupButtons();
@@ -323,9 +335,11 @@ document.addEventListener('DOMContentLoaded', function() {
     setupScrollIndicator();
     setupHeaderScroll();
     
-    log('✅ All functionality initialized');
+    log('✅ All functionality initialized successfully');
 });
 
 // Debug helpers
 window.scrollToElement = scrollToElement;
 window.isMobile = isMobile;
+
+log('✅ Script loaded successfully');
