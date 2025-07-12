@@ -27,21 +27,7 @@ if (mobileMenuBtn && nav) {
     });
 }
 
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
-
-// Scroll to contact function
+// Scroll to contact function - FIXED
 function scrollToContact() {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
@@ -52,7 +38,7 @@ function scrollToContact() {
     }
 }
 
-// Select service function
+// Select service function - FIXED
 function selectService(serviceName) {
     // Pre-fill the service dropdown in the contact form
     const serviceSelect = document.getElementById('service');
@@ -64,28 +50,64 @@ function selectService(serviceName) {
     scrollToContact();
 }
 
-// Enhanced button functionality for mobile
+// Enhanced button functionality - COMPLETELY REWRITTEN
 document.addEventListener('DOMContentLoaded', () => {
-    // Hero Book Now button
+    // Make scrollToContact and selectService globally available
+    window.scrollToContact = scrollToContact;
+    window.selectService = selectService;
+    
+    // Hero Book Now button - FIXED
     const heroBookBtn = document.querySelector('.cta-btn.primary');
     if (heroBookBtn) {
+        // Remove any existing onclick
+        heroBookBtn.removeAttribute('onclick');
+        
         heroBookBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Hero book button clicked'); // Debug
             scrollToContact();
+        });
+        
+        // Touch events for mobile
+        heroBookBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            heroBookBtn.style.transform = 'scale(0.98)';
+        });
+        
+        heroBookBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            setTimeout(() => {
+                heroBookBtn.style.transform = '';
+                scrollToContact();
+            }, 150);
         });
     }
     
-    // Service card buttons - ensure they work on mobile
+    // Service card buttons - FIXED
     document.querySelectorAll('.service-btn').forEach(btn => {
+        // Remove any existing onclick
+        btn.removeAttribute('onclick');
+        
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            
             const serviceCard = btn.closest('.service-card');
-            const serviceName = serviceCard ? serviceCard.querySelector('h3').textContent : 'Service';
+            let serviceName = 'Service';
+            
+            if (serviceCard) {
+                const serviceTitle = serviceCard.querySelector('h3');
+                if (serviceTitle) {
+                    serviceName = serviceTitle.textContent.trim();
+                }
+            }
+            
+            console.log('Service button clicked:', serviceName); // Debug
             selectService(serviceName);
         });
         
-        // Add touch feedback
+        // Touch events for mobile
         btn.addEventListener('touchstart', (e) => {
             btn.style.transform = 'scale(0.98)';
         });
@@ -97,15 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Maintenance button
+    // Maintenance button - FIXED
     const maintenanceBtn = document.querySelector('.maintenance-btn');
     if (maintenanceBtn) {
+        // Remove any existing onclick
+        maintenanceBtn.removeAttribute('onclick');
+        
         maintenanceBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Maintenance button clicked'); // Debug
             selectService('Maintenance Service');
         });
         
-        // Add touch feedback
+        // Touch events for mobile
         maintenanceBtn.addEventListener('touchstart', (e) => {
             maintenanceBtn.style.transform = 'scale(0.98)';
         });
@@ -117,17 +144,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Contact button in header
+    // Contact button in header - FIXED
     const headerContactBtn = document.querySelector('.nav .contact-btn');
     if (headerContactBtn) {
+        // Remove any existing onclick
+        headerContactBtn.removeAttribute('onclick');
+        
         headerContactBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Header contact button clicked'); // Debug
             scrollToContact();
         });
     }
     
+    // View Services button - FIXED
+    const viewServicesBtn = document.querySelector('.cta-btn.secondary');
+    if (viewServicesBtn) {
+        // Remove any existing onclick
+        viewServicesBtn.removeAttribute('onclick');
+        
+        viewServicesBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const servicesSection = document.getElementById('services');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    }
+    
     // Add touch feedback to all interactive elements
-    const interactiveElements = document.querySelectorAll('.cta-btn, .contact-method, .submit-btn');
+    const interactiveElements = document.querySelectorAll('.cta-btn, .contact-method, .submit-btn, .service-btn, .maintenance-btn');
     interactiveElements.forEach(element => {
         element.addEventListener('touchstart', (e) => {
             element.style.transform = 'scale(0.98)';
@@ -138,6 +189,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 element.style.transform = '';
             }, 150);
         });
+    });
+});
+
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     });
 });
 
