@@ -2,26 +2,30 @@
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const nav = document.querySelector('.nav');
 
-mobileMenuBtn.addEventListener('click', () => {
-    nav.classList.toggle('active');
-    mobileMenuBtn.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on nav links
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        nav.classList.remove('active');
-        mobileMenuBtn.classList.remove('active');
+if (mobileMenuBtn && nav) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        nav.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
     });
-});
 
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-        nav.classList.remove('active');
-        mobileMenuBtn.classList.remove('active');
-    }
-});
+    // Close mobile menu when clicking on nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            nav.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            nav.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        }
+    });
+}
 
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -39,9 +43,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Scroll to contact function
 function scrollToContact() {
-    document.getElementById('contact').scrollIntoView({
-        behavior: 'smooth'
-    });
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+        contactSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
 }
 
 // Select service function
@@ -56,20 +64,36 @@ function selectService(serviceName) {
     scrollToContact();
 }
 
-// Make all "Book Now" buttons scroll to footer contact form
+// Enhanced button functionality for mobile
 document.addEventListener('DOMContentLoaded', () => {
     // Hero Book Now button
     const heroBookBtn = document.querySelector('.cta-btn.primary');
     if (heroBookBtn) {
-        heroBookBtn.addEventListener('click', scrollToContact);
+        heroBookBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToContact();
+        });
     }
     
-    // Service card buttons
+    // Service card buttons - ensure they work on mobile
     document.querySelectorAll('.service-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const serviceName = btn.closest('.service-card').querySelector('h3').textContent;
+            e.stopPropagation();
+            const serviceCard = btn.closest('.service-card');
+            const serviceName = serviceCard ? serviceCard.querySelector('h3').textContent : 'Service';
             selectService(serviceName);
+        });
+        
+        // Add touch feedback
+        btn.addEventListener('touchstart', (e) => {
+            btn.style.transform = 'scale(0.98)';
+        });
+        
+        btn.addEventListener('touchend', (e) => {
+            setTimeout(() => {
+                btn.style.transform = '';
+            }, 150);
         });
     });
     
@@ -79,6 +103,17 @@ document.addEventListener('DOMContentLoaded', () => {
         maintenanceBtn.addEventListener('click', (e) => {
             e.preventDefault();
             selectService('Maintenance Service');
+        });
+        
+        // Add touch feedback
+        maintenanceBtn.addEventListener('touchstart', (e) => {
+            maintenanceBtn.style.transform = 'scale(0.98)';
+        });
+        
+        maintenanceBtn.addEventListener('touchend', (e) => {
+            setTimeout(() => {
+                maintenanceBtn.style.transform = '';
+            }, 150);
         });
     }
     
@@ -90,19 +125,35 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollToContact();
         });
     }
+    
+    // Add touch feedback to all interactive elements
+    const interactiveElements = document.querySelectorAll('.cta-btn, .contact-method, .submit-btn');
+    interactiveElements.forEach(element => {
+        element.addEventListener('touchstart', (e) => {
+            element.style.transform = 'scale(0.98)';
+        });
+        
+        element.addEventListener('touchend', (e) => {
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 150);
+        });
+    });
 });
 
 // Header background on scroll
 window.addEventListener('scroll', () => {
     const header = document.getElementById('header');
-    if (window.scrollY > 100) {
-        header.style.background = 'rgba(15, 15, 15, 0.95)';
-    } else {
-        header.style.background = 'rgba(15, 15, 15, 0.95)';
+    if (header) {
+        if (window.scrollY > 100) {
+            header.style.background = 'rgba(15, 15, 15, 0.98)';
+        } else {
+            header.style.background = 'rgba(15, 15, 15, 0.95)';
+        }
     }
 });
 
-// Scroll-based animations (replacing hover effects on mobile)
+// Mobile-optimized scroll animations
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -118,17 +169,21 @@ const observer = new IntersectionObserver((entries) => {
                 if (entry.target.classList.contains('service-card') ||
                     entry.target.classList.contains('benefit-item') ||
                     entry.target.classList.contains('testimonial-card')) {
-                    entry.target.classList.add('scroll-visible');
+                    
+                    // Delay the animation slightly for better effect
+                    setTimeout(() => {
+                        entry.target.classList.add('scroll-visible');
+                    }, 100);
                 }
             }
         }
     });
 }, observerOptions);
 
-// Observe elements for fade in animation
+// Observe elements for animations
 document.addEventListener('DOMContentLoaded', () => {
-    const fadeElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .service-card, .benefit-item, .testimonial-card');
-    fadeElements.forEach(el => observer.observe(el));
+    const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .service-card, .benefit-item, .testimonial-card');
+    animatedElements.forEach(el => observer.observe(el));
 });
 
 // Handle window resize to manage mobile/desktop animations
@@ -139,29 +194,53 @@ window.addEventListener('resize', () => {
     animatedElements.forEach(el => {
         if (!isMobile) {
             el.classList.remove('scroll-visible');
+        } else {
+            // Re-trigger animations for mobile if element is in view
+            const rect = el.getBoundingClientRect();
+            const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+            if (isInView) {
+                el.classList.add('scroll-visible');
+            }
         }
     });
 });
 
-// Improve touch interactions on mobile
-if ('ontouchstart' in window) {
+// Touch device detection and optimization
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
     document.body.classList.add('touch-device');
     
-    // Add touch feedback for buttons
-    document.querySelectorAll('button, .btn, .cta-btn, .service-btn, .maintenance-btn, .submit-btn').forEach(btn => {
-        btn.addEventListener('touchstart', function() {
-            this.style.transform = 'scale(0.98)';
+    // Prevent zoom on double tap for buttons
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+    
+    // Improve button responsiveness on touch devices
+    const buttons = document.querySelectorAll('button, .btn, .cta-btn, .service-btn, .maintenance-btn, .submit-btn, .contact-method');
+    buttons.forEach(btn => {
+        // Remove hover states on touch devices
+        btn.addEventListener('touchstart', function(e) {
+            this.classList.add('touch-active');
         });
         
-        btn.addEventListener('touchend', function() {
+        btn.addEventListener('touchend', function(e) {
             setTimeout(() => {
-                this.style.transform = '';
+                this.classList.remove('touch-active');
             }, 150);
         });
+        
+        // Ensure buttons are properly clickable
+        btn.style.cursor = 'pointer';
+        btn.style.touchAction = 'manipulation';
+        btn.style.webkitTapHighlightColor = 'transparent';
     });
 }
 
-// Contact form submission
+// Enhanced contact form submission with better mobile support
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -173,6 +252,12 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     const preferredDate = formData.get('preferred-date');
     const preferredTime = formData.get('preferred-time');
     const message = formData.get('message');
+    
+    // Validate required fields
+    if (!name || !email || !phone || !service || !preferredDate || !preferredTime) {
+        alert('Please fill in all required fields.');
+        return;
+    }
     
     // Format the date for better readability
     const dateObj = new Date(preferredDate);
@@ -202,18 +287,87 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     // Create WhatsApp message
     const whatsappMessage = `Hi! I'd like to book a service.%0A%0AName: ${name}%0AEmail: ${email}%0APhone: ${phone}%0AService: ${service}%0APreferred Date: ${formattedDate}%0APreferred Time: ${preferredTime}%0AMessage: ${message || 'No additional message'}`;
     
-    // Open email clients and WhatsApp
-    window.open(email1, '_blank');
-    setTimeout(() => {
-        window.open(email2, '_blank');
-    }, 500);
-    setTimeout(() => {
+    // For mobile devices, open WhatsApp first as it's more commonly used
+    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        // On mobile, prioritize WhatsApp
         window.open(`https://wa.me/447398251847?text=${whatsappMessage}`, '_blank');
-    }, 1000);
+        
+        // Show option to also send email
+        setTimeout(() => {
+            if (confirm('Would you also like to send an email?')) {
+                window.open(email1, '_blank');
+            }
+        }, 1000);
+    } else {
+        // On desktop, open email clients and WhatsApp
+        window.open(email1, '_blank');
+        setTimeout(() => {
+            window.open(email2, '_blank');
+        }, 500);
+        setTimeout(() => {
+            window.open(`https://wa.me/447398251847?text=${whatsappMessage}`, '_blank');
+        }, 1000);
+    }
     
     // Reset form
     this.reset();
     
     // Show success message
-    alert('Thank you! Email clients will open to send your booking request to both addresses, and WhatsApp will also open for immediate contact.');
+    const successMessage = isMobile ? 
+        'Thank you! WhatsApp will open to send your booking request.' :
+        'Thank you! Email clients will open to send your booking request, and WhatsApp will also open for immediate contact.';
+    
+    alert(successMessage);
 });
+
+// Prevent form zoom on iOS
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            if (window.innerWidth <= 768) {
+                // Prevent zoom on focus for mobile
+                input.style.fontSize = '16px';
+            }
+        });
+    });
+});
+
+// Optimize scroll performance on mobile
+let ticking = false;
+
+function updateScrollAnimations() {
+    const scrollTop = window.pageYOffset;
+    const windowHeight = window.innerHeight;
+    
+    // Only run animations if on mobile
+    if (window.innerWidth <= 768) {
+        const animatedElements = document.querySelectorAll('.service-card, .benefit-item, .testimonial-card');
+        
+        animatedElements.forEach(element => {
+            const elementTop = element.offsetTop;
+            const elementHeight = element.offsetHeight;
+            
+            // Check if element is in viewport
+            if (scrollTop + windowHeight > elementTop + 100 && scrollTop < elementTop + elementHeight) {
+                if (!element.classList.contains('scroll-visible')) {
+                    element.classList.add('scroll-visible');
+                }
+            }
+        });
+    }
+    
+    ticking = false;
+}
+
+function requestScrollUpdate() {
+    if (!ticking) {
+        requestAnimationFrame(updateScrollAnimations);
+        ticking = true;
+    }
+}
+
+// Throttled scroll listener for better performance
+window.addEventListener('scroll', requestScrollUpdate, { passive: true });
