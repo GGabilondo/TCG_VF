@@ -71,16 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Touch events for mobile
         heroBookBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
             heroBookBtn.style.transform = 'scale(0.98)';
         });
         
         heroBookBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
             setTimeout(() => {
                 heroBookBtn.style.transform = '';
-                scrollToContact();
             }, 150);
+        });
+        
+        // Additional mobile touch handling
+        heroBookBtn.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevent scrolling during touch
         });
     }
     
@@ -117,6 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.style.transform = '';
             }, 150);
         });
+        
+        // Additional mobile touch handling
+        btn.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevent scrolling during touch
+        });
     });
     
     // Maintenance button - FIXED
@@ -141,6 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 maintenanceBtn.style.transform = '';
             }, 150);
+        });
+        
+        // Additional mobile touch handling
+        maintenanceBtn.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevent scrolling during touch
         });
     }
     
@@ -177,19 +189,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Add touch feedback to all interactive elements
-    const interactiveElements = document.querySelectorAll('.cta-btn, .contact-method, .submit-btn, .service-btn, .maintenance-btn');
-    interactiveElements.forEach(element => {
-        element.addEventListener('touchstart', (e) => {
-            element.style.transform = 'scale(0.98)';
-        });
+    // Enhanced mobile button handling
+    const isMobileDevice = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    
+    if (isMobileDevice) {
+        // Add specific mobile handling for all buttons
+        const allButtons = document.querySelectorAll('.cta-btn, .service-btn, .maintenance-btn, .submit-btn');
         
-        element.addEventListener('touchend', (e) => {
-            setTimeout(() => {
-                element.style.transform = '';
-            }, 150);
+        allButtons.forEach(button => {
+            // Ensure buttons are properly configured for mobile
+            button.style.touchAction = 'manipulation';
+            button.style.webkitTapHighlightColor = 'transparent';
+            button.style.userSelect = 'none';
+            
+            // Add mobile-specific event listeners
+            button.addEventListener('touchstart', (e) => {
+                button.style.transform = 'scale(0.98)';
+                button.style.transition = 'transform 0.1s ease';
+            }, { passive: true });
+            
+            button.addEventListener('touchend', (e) => {
+                setTimeout(() => {
+                    button.style.transform = '';
+                    button.style.transition = 'transform 0.3s ease';
+                }, 100);
+            }, { passive: true });
+            
+            button.addEventListener('touchcancel', (e) => {
+                button.style.transform = '';
+                button.style.transition = 'transform 0.3s ease';
+            }, { passive: true });
         });
-    });
+    }
 });
 
 // Scroll indicator functionality
