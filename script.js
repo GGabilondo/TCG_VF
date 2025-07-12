@@ -1,256 +1,231 @@
-// MOBILE-FIRST BUTTON FUNCTIONALITY - COMPLETE REWRITE
-// Simplified approach with no complex effects
+// ULTRA-SIMPLIFIED MOBILE SCRIPT - NO COMPLEX EFFECTS
+// Focus on basic functionality only
 
-console.log('🚀 Starting mobile-optimized script...');
+console.log('🚀 Starting ultra-simplified mobile script...');
 
-// Utility functions
-function isMobileDevice() {
+// Basic utility functions
+function isMobile() {
     return window.innerWidth <= 768;
 }
 
-function smoothScrollTo(elementId) {
-    console.log(`📍 Attempting to scroll to: ${elementId}`);
+function log(message) {
+    console.log(`📱 ${message}`);
+}
+
+function scrollToElement(elementId) {
+    log(`Scrolling to: ${elementId}`);
     const element = document.getElementById(elementId);
     if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-        console.log(`✅ Successfully scrolled to: ${elementId}`);
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        log(`✅ Scrolled to: ${elementId}`);
         return true;
     }
-    console.error(`❌ Element not found: ${elementId}`);
+    log(`❌ Element not found: ${elementId}`);
     return false;
 }
 
-function scrollToContact() {
-    console.log('📞 Scrolling to contact form');
-    return smoothScrollTo('contact');
-}
-
-function scrollToServices() {
-    console.log('🔧 Scrolling to services');
-    return smoothScrollTo('services');
-}
-
-function selectServiceAndScroll(serviceName) {
-    console.log(`🎯 Selecting service: ${serviceName}`);
-    
-    // Pre-fill the service dropdown
-    const serviceSelect = document.getElementById('service');
-    if (serviceSelect) {
-        serviceSelect.value = serviceName;
-        console.log(`✅ Service selected: ${serviceName}`);
-    } else {
-        console.error('❌ Service dropdown not found');
-    }
-    
-    // Scroll to contact form
-    scrollToContact();
-}
-
-// Simple button click handlers
-function handleHeroBookNow(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('🎯 Hero Book Now clicked');
-    scrollToContact();
-}
-
-function handleViewServices(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('👀 View Services clicked');
-    scrollToServices();
-}
-
-function handleHeaderContact(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('📞 Header Contact clicked');
-    scrollToContact();
-}
-
-function handleServiceButton(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    const button = event.currentTarget;
-    const serviceCard = button.closest('.service-card');
-    let serviceName = 'Service';
-    
-    if (serviceCard) {
-        const serviceTitle = serviceCard.querySelector('h3');
-        if (serviceTitle) {
-            serviceName = serviceTitle.textContent.trim();
-        }
-    }
-    
-    console.log(`🔧 Service button clicked: ${serviceName}`);
-    selectServiceAndScroll(serviceName);
-}
-
-function handleMaintenanceButton(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log('🛠️ Maintenance button clicked');
-    selectServiceAndScroll('Maintenance Service');
-}
-
-// Mobile menu functionality - SIMPLIFIED
-function initializeMobileMenu() {
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+// Simple mobile menu
+function setupMobileMenu() {
+    const menuBtn = document.getElementById('mobileMenuBtn');
     const nav = document.querySelector('.nav');
-
-    if (!mobileMenuBtn || !nav) {
-        console.error('❌ Mobile menu elements not found');
+    
+    if (!menuBtn || !nav) {
+        log('❌ Mobile menu elements missing');
         return;
     }
-
-    console.log('📱 Initializing mobile menu');
-
-    // Simple toggle function
-    function toggleMenu() {
-        console.log('🍔 Mobile menu toggled');
-        nav.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
-    }
-
-    // Close menu function
-    function closeMenu() {
-        console.log('❌ Closing mobile menu');
-        nav.classList.remove('active');
-        mobileMenuBtn.classList.remove('active');
-    }
-
-    // Mobile menu button click
-    mobileMenuBtn.addEventListener('click', function(e) {
+    
+    log('Setting up mobile menu');
+    
+    // Toggle menu
+    menuBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        toggleMenu();
+        log('🍔 Menu button clicked');
+        
+        const isActive = nav.classList.contains('active');
+        if (isActive) {
+            nav.classList.remove('active');
+            menuBtn.classList.remove('active');
+            log('❌ Menu closed');
+        } else {
+            nav.classList.add('active');
+            menuBtn.classList.add('active');
+            log('✅ Menu opened');
+        }
     });
-
-    // Close menu when clicking nav links
-    document.querySelectorAll('.nav-link').forEach(link => {
+    
+    // Close menu on nav link click
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            console.log('🔗 Nav link clicked, closing menu');
-            closeMenu();
+            log('🔗 Nav link clicked');
+            nav.classList.remove('active');
+            menuBtn.classList.remove('active');
             
-            // Handle navigation
             const href = this.getAttribute('href');
             if (href && href.startsWith('#')) {
                 e.preventDefault();
                 const targetId = href.substring(1);
-                if (targetId === 'contact') {
-                    scrollToContact();
-                } else {
-                    smoothScrollTo(targetId);
-                }
+                scrollToElement(targetId);
             }
         });
     });
-
-    // Close menu when clicking outside
+    
+    // Close menu on outside click
     document.addEventListener('click', function(e) {
-        if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-            closeMenu();
+        if (!nav.contains(e.target) && !menuBtn.contains(e.target)) {
+            if (nav.classList.contains('active')) {
+                nav.classList.remove('active');
+                menuBtn.classList.remove('active');
+                log('❌ Menu closed (outside click)');
+            }
         }
     });
 }
 
-// Initialize all button functionality - SIMPLIFIED
-function initializeButtons() {
-    console.log('🔘 Initializing buttons...');
-
-    // Hero Book Now button
+// Simple button handlers
+function setupButtons() {
+    log('Setting up buttons');
+    
+    // Hero Book Now
     const heroBookBtn = document.querySelector('.hero .cta-btn.primary');
     if (heroBookBtn) {
-        heroBookBtn.addEventListener('click', handleHeroBookNow);
-        console.log('✅ Hero Book Now button initialized');
-    } else {
-        console.error('❌ Hero Book Now button not found');
+        heroBookBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            log('🎯 Hero Book Now clicked');
+            scrollToElement('contact');
+        });
+        log('✅ Hero Book Now setup');
     }
-
-    // View Services button
+    
+    // View Services
     const viewServicesBtn = document.querySelector('.hero .cta-btn.secondary');
     if (viewServicesBtn) {
-        viewServicesBtn.addEventListener('click', handleViewServices);
-        console.log('✅ View Services button initialized');
+        viewServicesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            log('👀 View Services clicked');
+            scrollToElement('services');
+        });
+        log('✅ View Services setup');
     }
-
-    // Header Contact button
+    
+    // Header Contact
     const headerContactBtn = document.querySelector('.nav .contact-btn');
     if (headerContactBtn) {
-        headerContactBtn.addEventListener('click', handleHeaderContact);
-        console.log('✅ Header Contact button initialized');
-    } else {
-        console.error('❌ Header Contact button not found');
+        headerContactBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            log('📞 Header Contact clicked');
+            scrollToElement('contact');
+        });
+        log('✅ Header Contact setup');
     }
-
-    // Service card buttons
+    
+    // Service buttons
     const serviceButtons = document.querySelectorAll('.service-btn');
-    console.log(`🔧 Found ${serviceButtons.length} service buttons`);
+    log(`Found ${serviceButtons.length} service buttons`);
     
     serviceButtons.forEach((btn, index) => {
-        btn.addEventListener('click', handleServiceButton);
-        console.log(`✅ Service button ${index + 1} initialized`);
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const serviceCard = this.closest('.service-card');
+            let serviceName = 'Service';
+            
+            if (serviceCard) {
+                const titleElement = serviceCard.querySelector('h3');
+                if (titleElement) {
+                    serviceName = titleElement.textContent.trim();
+                }
+            }
+            
+            log(`🔧 Service button ${index + 1} clicked: ${serviceName}`);
+            
+            // Pre-fill service dropdown
+            const serviceSelect = document.getElementById('service');
+            if (serviceSelect) {
+                serviceSelect.value = serviceName;
+                log(`✅ Service pre-filled: ${serviceName}`);
+            }
+            
+            scrollToElement('contact');
+        });
+        log(`✅ Service button ${index + 1} setup`);
     });
-
+    
     // Maintenance button
     const maintenanceBtn = document.querySelector('.maintenance-btn');
     if (maintenanceBtn) {
-        maintenanceBtn.addEventListener('click', handleMaintenanceButton);
-        console.log('✅ Maintenance button initialized');
-    } else {
-        console.error('❌ Maintenance button not found');
+        maintenanceBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            log('🛠️ Maintenance button clicked');
+            
+            const serviceSelect = document.getElementById('service');
+            if (serviceSelect) {
+                serviceSelect.value = 'Maintenance Service';
+                log('✅ Maintenance service pre-filled');
+            }
+            
+            scrollToElement('contact');
+        });
+        log('✅ Maintenance button setup');
     }
 }
 
-// Smooth scrolling for navigation links
-function initializeNavigation() {
-    console.log('🧭 Initializing navigation');
+// Simple navigation
+function setupNavigation() {
+    log('Setting up navigation');
     
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            console.log(`🔗 Navigation link clicked: ${targetId}`);
-            smoothScrollTo(targetId);
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                log(`🔗 Navigation to: ${targetId}`);
+                scrollToElement(targetId);
+            }
         });
     });
 }
 
-// Contact form submission
-function initializeContactForm() {
-    const contactForm = document.getElementById('contactForm');
-    if (!contactForm) {
-        console.error('❌ Contact form not found');
+// Simple contact form
+function setupContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) {
+        log('❌ Contact form not found');
         return;
     }
-
-    console.log('📝 Initializing contact form');
-
-    contactForm.addEventListener('submit', function(e) {
+    
+    log('Setting up contact form');
+    
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
-        console.log('📧 Contact form submitted');
+        log('📧 Form submitted');
         
         const formData = new FormData(this);
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const phone = formData.get('phone');
-        const service = formData.get('service');
-        const preferredDate = formData.get('preferred-date');
-        const preferredTime = formData.get('preferred-time');
-        const message = formData.get('message');
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            service: formData.get('service'),
+            date: formData.get('preferred-date'),
+            time: formData.get('preferred-time'),
+            message: formData.get('message') || 'No additional message'
+        };
         
-        // Validate required fields
-        if (!name || !email || !phone || !service || !preferredDate || !preferredTime) {
+        // Validate
+        if (!data.name || !data.email || !data.phone || !data.service || !data.date || !data.time) {
             alert('Please fill in all required fields.');
             return;
         }
         
-        // Format the date for better readability
-        const dateObj = new Date(preferredDate);
+        // Format date
+        const dateObj = new Date(data.date);
         const formattedDate = dateObj.toLocaleDateString('en-GB', {
             weekday: 'long',
             year: 'numeric',
@@ -258,89 +233,72 @@ function initializeContactForm() {
             day: 'numeric'
         });
         
-        // Create email body
-        const emailSubject = `New Booking Request - ${service}`;
-        const emailBody = `New booking request from TCG CarCare website:%0A%0A` +
-            `Name: ${name}%0A` +
-            `Email: ${email}%0A` +
-            `Phone: ${phone}%0A` +
-            `Service: ${service}%0A` +
-            `Preferred Date: ${formattedDate}%0A` +
-            `Preferred Time: ${preferredTime}%0A` +
-            `Message: ${message || 'No additional message'}%0A%0A` +
-            `Please respond to confirm the booking.`;
+        // Create messages
+        const emailSubject = `New Booking Request - ${data.service}`;
+        const emailBody = `New booking request:%0A%0A` +
+            `Name: ${data.name}%0A` +
+            `Email: ${data.email}%0A` +
+            `Phone: ${data.phone}%0A` +
+            `Service: ${data.service}%0A` +
+            `Date: ${formattedDate}%0A` +
+            `Time: ${data.time}%0A` +
+            `Message: ${data.message}`;
         
-        // Create mailto links
-        const email1 = `mailto:info@tcgcarcare.co.uk?subject=${emailSubject}&body=${emailBody}`;
-        const email2 = `mailto:hola@remedio.studio?subject=${emailSubject}&body=${emailBody}`;
+        const whatsappMessage = `Hi! Booking request:%0A%0A` +
+            `Name: ${data.name}%0A` +
+            `Email: ${data.email}%0A` +
+            `Phone: ${data.phone}%0A` +
+            `Service: ${data.service}%0A` +
+            `Date: ${formattedDate}%0A` +
+            `Time: ${data.time}%0A` +
+            `Message: ${data.message}`;
         
-        // Create WhatsApp message
-        const whatsappMessage = `Hi! I'd like to book a service.%0A%0AName: ${name}%0AEmail: ${email}%0APhone: ${phone}%0AService: ${service}%0APreferred Date: ${formattedDate}%0APreferred Time: ${preferredTime}%0AMessage: ${message || 'No additional message'}`;
-        
-        // Handle mobile vs desktop
-        if (isMobileDevice()) {
-            // On mobile, prioritize WhatsApp
+        // Open communication channels
+        if (isMobile()) {
             window.open(`https://wa.me/447398251847?text=${whatsappMessage}`, '_blank');
-            
-            // Show option to also send email
             setTimeout(() => {
-                if (confirm('Would you also like to send an email?')) {
-                    window.open(email1, '_blank');
+                if (confirm('Also send email?')) {
+                    window.open(`mailto:info@tcgcarcare.co.uk?subject=${emailSubject}&body=${emailBody}`, '_blank');
                 }
             }, 1000);
         } else {
-            // On desktop, open email clients and WhatsApp
-            window.open(email1, '_blank');
-            setTimeout(() => {
-                window.open(email2, '_blank');
-            }, 500);
+            window.open(`mailto:info@tcgcarcare.co.uk?subject=${emailSubject}&body=${emailBody}`, '_blank');
             setTimeout(() => {
                 window.open(`https://wa.me/447398251847?text=${whatsappMessage}`, '_blank');
-            }, 1000);
+            }, 500);
         }
         
-        // Reset form
+        // Reset and notify
         this.reset();
-        
-        // Show success message
-        const successMessage = isMobileDevice() ? 
-            'Thank you! WhatsApp will open to send your booking request.' :
-            'Thank you! Email clients will open to send your booking request, and WhatsApp will also open for immediate contact.';
-        
-        alert(successMessage);
+        alert('Thank you! Your booking request will be sent.');
+        log('✅ Form processed successfully');
     });
 }
 
-// Scroll indicator functionality
-function initializeScrollIndicator() {
-    const scrollIndicator = document.getElementById('scrollIndicator');
-    
-    if (scrollIndicator) {
-        scrollIndicator.addEventListener('click', function(e) {
+// Simple scroll indicator
+function setupScrollIndicator() {
+    const indicator = document.getElementById('scrollIndicator');
+    if (indicator) {
+        indicator.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('⬇️ Scroll indicator clicked');
-            scrollToServices();
+            log('⬇️ Scroll indicator clicked');
+            scrollToElement('services');
         });
         
-        // Hide scroll indicator when user scrolls
         window.addEventListener('scroll', function() {
-            const scrollTop = window.pageYOffset;
-            
-            if (scrollTop > 100) {
-                scrollIndicator.style.opacity = '0';
-                scrollIndicator.style.pointerEvents = 'none';
+            if (window.pageYOffset > 100) {
+                indicator.style.opacity = '0';
             } else {
-                scrollIndicator.style.opacity = '1';
-                scrollIndicator.style.pointerEvents = 'auto';
+                indicator.style.opacity = '1';
             }
         });
         
-        console.log('✅ Scroll indicator initialized');
+        log('✅ Scroll indicator setup');
     }
 }
 
-// Header background on scroll
-function initializeHeaderScroll() {
+// Simple header scroll
+function setupHeaderScroll() {
     window.addEventListener('scroll', function() {
         const header = document.getElementById('header');
         if (header) {
@@ -353,24 +311,21 @@ function initializeHeaderScroll() {
     });
 }
 
-// Initialize everything when DOM is loaded
+// Initialize everything
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM loaded, initializing mobile-optimized functionality...');
-    console.log('📱 Is mobile device:', isMobileDevice());
+    log('🚀 DOM loaded - initializing...');
+    log(`📱 Mobile device: ${isMobile()}`);
     
-    // Initialize all functionality
-    initializeMobileMenu();
-    initializeButtons();
-    initializeScrollIndicator();
-    initializeNavigation();
-    initializeHeaderScroll();
-    initializeContactForm();
+    setupMobileMenu();
+    setupButtons();
+    setupNavigation();
+    setupContactForm();
+    setupScrollIndicator();
+    setupHeaderScroll();
     
-    console.log('✅ All mobile functionality initialized successfully');
+    log('✅ All functionality initialized');
 });
 
-// Make functions globally available for debugging
-window.scrollToContact = scrollToContact;
-window.selectServiceAndScroll = selectServiceAndScroll;
-window.scrollToServices = scrollToServices;
-window.isMobileDevice = isMobileDevice;
+// Debug helpers
+window.scrollToElement = scrollToElement;
+window.isMobile = isMobile;
