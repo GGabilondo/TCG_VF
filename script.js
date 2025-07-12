@@ -192,6 +192,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Scroll indicator functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+            const servicesSection = document.getElementById('services');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+        
+        // Hide scroll indicator when user scrolls
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset;
+            
+            if (scrollTop > 100) {
+                scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.pointerEvents = 'none';
+            } else {
+                scrollIndicator.style.opacity = '1';
+                scrollIndicator.style.pointerEvents = 'auto';
+            }
+        });
+    }
+});
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
