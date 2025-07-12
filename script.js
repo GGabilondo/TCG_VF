@@ -398,6 +398,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Add custom placeholder for date input
+    const dateInput = document.getElementById('preferred-date');
+    if (dateInput) {
+        // Set a custom attribute to show placeholder text
+        dateInput.setAttribute('data-placeholder', 'Select Preferred Date');
+        
+        // Show placeholder when empty
+        if (!dateInput.value) {
+            dateInput.style.color = '#a0a0a0';
+        }
+        
+        dateInput.addEventListener('focus', function() {
+            this.style.color = '#fff';
+        });
+        
+        dateInput.addEventListener('blur', function() {
+            if (!this.value) {
+                this.style.color = '#a0a0a0';
+            }
+        });
+    }
 });
 
 // Optimize scroll performance on mobile
