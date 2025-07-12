@@ -15,6 +15,14 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        nav.classList.remove('active');
+        mobileMenuBtn.classList.remove('active');
+    }
+});
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -48,6 +56,42 @@ function selectService(serviceName) {
     scrollToContact();
 }
 
+// Make all "Book Now" buttons scroll to footer contact form
+document.addEventListener('DOMContentLoaded', () => {
+    // Hero Book Now button
+    const heroBookBtn = document.querySelector('.cta-btn.primary');
+    if (heroBookBtn) {
+        heroBookBtn.addEventListener('click', scrollToContact);
+    }
+    
+    // Service card buttons
+    document.querySelectorAll('.service-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const serviceName = btn.closest('.service-card').querySelector('h3').textContent;
+            selectService(serviceName);
+        });
+    });
+    
+    // Maintenance button
+    const maintenanceBtn = document.querySelector('.maintenance-btn');
+    if (maintenanceBtn) {
+        maintenanceBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            selectService('Maintenance Service');
+        });
+    }
+    
+    // Contact button in header
+    const headerContactBtn = document.querySelector('.nav .contact-btn');
+    if (headerContactBtn) {
+        headerContactBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToContact();
+        });
+    }
+});
+
 // Header background on scroll
 window.addEventListener('scroll', () => {
     const header = document.getElementById('header');
@@ -58,7 +102,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Fade in animation on scroll
+// Scroll-based animations (replacing hover effects on mobile)
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -68,15 +112,54 @@ const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('visible');
+            
+            // Add scroll-visible class for mobile animations
+            if (window.innerWidth <= 768) {
+                if (entry.target.classList.contains('service-card') ||
+                    entry.target.classList.contains('benefit-item') ||
+                    entry.target.classList.contains('testimonial-card')) {
+                    entry.target.classList.add('scroll-visible');
+                }
+            }
         }
     });
 }, observerOptions);
 
 // Observe elements for fade in animation
 document.addEventListener('DOMContentLoaded', () => {
-    const fadeElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right');
+    const fadeElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .service-card, .benefit-item, .testimonial-card');
     fadeElements.forEach(el => observer.observe(el));
 });
+
+// Handle window resize to manage mobile/desktop animations
+window.addEventListener('resize', () => {
+    const isMobile = window.innerWidth <= 768;
+    const animatedElements = document.querySelectorAll('.service-card, .benefit-item, .testimonial-card');
+    
+    animatedElements.forEach(el => {
+        if (!isMobile) {
+            el.classList.remove('scroll-visible');
+        }
+    });
+});
+
+// Improve touch interactions on mobile
+if ('ontouchstart' in window) {
+    document.body.classList.add('touch-device');
+    
+    // Add touch feedback for buttons
+    document.querySelectorAll('button, .btn, .cta-btn, .service-btn, .maintenance-btn, .submit-btn').forEach(btn => {
+        btn.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
+        });
+        
+        btn.addEventListener('touchend', function() {
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+}
 
 // Contact form submission
 document.getElementById('contactForm').addEventListener('submit', function(e) {
@@ -133,18 +216,4 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     
     // Show success message
     alert('Thank you! Email clients will open to send your booking request to both addresses, and WhatsApp will also open for immediate contact.');
-});
-
-// Smooth scroll for hero CTA buttons
-document.addEventListener('DOMContentLoaded', () => {
-    const ctaButtons = document.querySelectorAll('.cta-btn');
-    ctaButtons.forEach(button => {
-        if (button.textContent.includes('View Services')) {
-            button.addEventListener('click', () => {
-                document.getElementById('services').scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        }
-    });
 });
